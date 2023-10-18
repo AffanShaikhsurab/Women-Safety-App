@@ -15,6 +15,7 @@ class SafeCarousel extends StatelessWidget {
         options: CarouselOptions(
           autoPlay: true,
           aspectRatio: 2.0,
+          scrollDirection :Axis.vertical,
           enlargeCenterPage: true,
         ),
         items: List.generate(

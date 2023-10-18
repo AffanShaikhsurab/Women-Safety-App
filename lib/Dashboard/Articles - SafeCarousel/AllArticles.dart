@@ -83,16 +83,7 @@ class _AllArticlesState extends State<AllArticles>
                                 //     title: new Text("Widget webview"),
                                 //   ),
                                 // ),
-                                if (index == 0) {
-                                  navigateToRoute(
-                                      context,
-                                      SafeWebView(
-                                          index: index,
-                                          title:
-                                              "Pakistani women inspiring the country",
-                                          url:
-                                              "https://gulfnews.com/world/asia/pakistan/womens-day-10-pakistani-women-inspiring-the-country-1.77696239"));
-                                } else if (index == 1) {
+                                  if (index == 0) {
                                   navigateToRoute(
                                       context,
                                       SafeWebView(
@@ -100,8 +91,9 @@ class _AllArticlesState extends State<AllArticles>
                                           title: "We have to end Violance",
                                           url:
                                               "https://plan-international.org/ending-violence/16-ways-end-violence-girls"));
-                                } else if (index == 2) {
+                                } else if (index == 1) {
                                   navigateToRoute(
+
                                       context, ArticleDesc(index: index));
                                 } else {
                                   navigateToRoute(

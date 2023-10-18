@@ -2,7 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
-import 'package:womensafteyhackfair/Dashboard/Dashboard.dart';
+
+import '../Login.dart';
 
 class Splash extends StatefulWidget {
   const Splash({Key key}) : super(key: key);
@@ -20,7 +21,7 @@ class _SplashState extends State<Splash> {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (context) => Dashboard(),
+          builder: (context) => Login(),
         ),
       );
     });
@@ -29,7 +30,7 @@ class _SplashState extends State<Splash> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Color(0xFFFD8080),
+        backgroundColor: Color.fromARGB(255, 190, 173, 250),
         body: Stack(
           children: [
             Align(
@@ -51,7 +52,7 @@ class _SplashState extends State<Splash> {
               child: Padding(
                 padding: const EdgeInsets.only(bottom: 180.0),
                 child: Text(
-                  "AMAAN",
+                  "Rakshak",
                   style: TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.bold,

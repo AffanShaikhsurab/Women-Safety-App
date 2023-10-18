@@ -4,19 +4,18 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:lottie/lottie.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:womensafteyhackfair/Dashboard/ContactScreens/phonebook_view.dart';
-import 'package:womensafteyhackfair/background_services.dart';
 import 'package:workmanager/workmanager.dart';
 
 import '../Home.dart';
 
-class SafeHome extends StatefulWidget {
-  const SafeHome({Key key}) : super(key: key);
+class SuperAlert extends StatefulWidget {
+  const SuperAlert({Key key}) : super(key: key);
 
   @override
   _SafeHomeState createState() => _SafeHomeState();
 }
 
-class _SafeHomeState extends State<SafeHome> {
+class _SafeHomeState extends State<SuperAlert> {
   bool getHomeSafeActivated = false;
   List<String> numbers = [];
 
@@ -45,8 +44,7 @@ class _SafeHomeState extends State<SafeHome> {
   @override
   void initState() {
     super.initState();
-
-    checkGetHomeActivated();
+      checkGetHomeActivated();
   }
 
   @override
@@ -58,6 +56,7 @@ class _SafeHomeState extends State<SafeHome> {
           showModelSafeHome(getHomeSafeActivated);
         },
         child: Card(
+          color:Color.fromARGB(255, 255, 166, 159),
           elevation: 5,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20),
@@ -76,8 +75,8 @@ class _SafeHomeState extends State<SafeHome> {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       ListTile(
-                        title: Text("Get Home Safe"),
-                        subtitle: Text("Share Location Periodically"),
+                        title: Text("Enable Super Alert"),
+                        subtitle: Text("Share Your Audio and Location"),
                       ),
                       Visibility(
                         visible: getHomeSafeActivated,
@@ -128,7 +127,7 @@ class _SafeHomeState extends State<SafeHome> {
               return Container(
                 height: MediaQuery.of(context).size.height / 1.4,
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: Color.fromARGB(255, 255, 216, 216),
                   borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(30),
                     topRight: Radius.circular(30),
@@ -158,7 +157,7 @@ class _SafeHomeState extends State<SafeHome> {
                       margin: EdgeInsets.symmetric(horizontal: 15),
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(20),
-                          color: Color(0xFFF5F4F6)),
+                          color: Color.fromRGBO(255, 170, 170, 1)),
                       child: SwitchListTile(
                         secondary: Lottie.asset("assets/routes.json"),
                         value: getHomeActivated,
@@ -179,8 +178,7 @@ class _SafeHomeState extends State<SafeHome> {
                               tag: "3",
                               inputData: {
                                 "contact":
-                                    numbers[selectedContact].split("***")[1],
-                                    "id" : 2
+                                    numbers[selectedContact].split("***")[1],"id" : 2
                               },
                               frequency: Duration(minutes: 15),
                             );
@@ -190,7 +188,7 @@ class _SafeHomeState extends State<SafeHome> {
                           }
                         },
                         subtitle: Text(
-                            "Your location will be shared with one of your contacts every 15 minutes"),
+                            "Your location & Audio will be shared with one of your contacts every 15 minutes"),
                       ),
                     ),
                     Expanded(

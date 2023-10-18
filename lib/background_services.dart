@@ -1,13 +1,16 @@
 import 'dart:async';
 
 import 'package:background_location/background_location.dart';
+import 'package:cloudinary_public/cloudinary_public.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
+import 'package:flutter_sms/flutter_sms.dart';
+import 'package:flutter_sound/flutter_sound.dart';
+// import 'package:mic_stream/mic_stream.dart';
 import 'package:shake/shake.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:telephony/telephony.dart';
-import 'package:vibration/vibration.dart';
 import 'package:workmanager/workmanager.dart';
 
 // ** IMPORTANT INSTRUCTIONS **
@@ -106,67 +109,68 @@ void onStart() async {
 
     // It deals with all the tests and then vibrates the phone so to let 
     // user know that shake was successful and sos has been generated
-      shakeThresholdGravity: 7,
-      onPhoneShake: () async {
-        print("Test 1");
-        if (await Vibration.hasVibrator()) {
-          print("Test 2");
-          if (await Vibration.hasCustomVibrationsSupport()) {
-            print("Test 3");
-            Vibration.vibrate(duration: 1000);
-          } else {
-            print("Test 4");
-            Vibration.vibrate();
-            await Future.delayed(Duration(milliseconds: 500));
-            Vibration.vibrate();
-          }
-          print("Test 5");
-        }
-        print("Test 6");
-        String link = '';
-        print("Test 7");
-        try {
-          double lat = _location.latitude;
-          double long = _location.longitude;
-          print("$lat ... $long");
-          print("Test 9");
-          link = "http://maps.google.com/?q=$lat,$long";
-          SharedPreferences prefs = await SharedPreferences.getInstance();
-          List<String> numbers = prefs.getStringList("numbers") ?? [];
-          String error;
-          try {
-            if (numbers.isEmpty) {
-              screenShake = "No contacs found, Please call 15 ASAP.";
-              debugPrint(
-                'No Contacts Found!',
-              );
-              return;
-            } else {
-              for (int i = 0; i < numbers.length; i++) {
-                //Here I used telephony to send sms messages to the saved contacts. 
-                Telephony.backgroundInstance.sendSms(
-                    to: numbers[i], message: "Help Me! Track me here.\n$link");
-              }
-              prefs.setBool("alerted", true);
-              screenShake = "SOS alert Sent! Help is on the way.";
-            }
-          } on PlatformException catch (e) {
-            if (e.code == 'PERMISSION_DENIED') {
-              error = 'Please grant permission';
-              print('Error due to Denied: $error');
-            }
-            if (e.code == 'PERMISSION_DENIED_NEVER_ASK') {
-              error = 'Permission denied- please enable it from app settings';
-              print("Error due to not Asking: $error");
-            }
-          }
-          print("Test 10");
-          print(link);
-        } catch (e) {
-          print("Test 11");
-          print(e);
-        }
-      });
+    //   shakeThresholdGravity: 7,
+    //   onPhoneShake: () async {
+    //     print("Test 1");
+    //     if (await Vibration.hasVibrator()) {
+    //       print("Test 2");
+    //       if (await Vibration.hasCustomVibrationsSupport()) {
+    //         print("Test 3");
+    //         Vibration.vibrate(duration: 1000);
+    //       } else {
+    //         print("Test 4");
+    //         Vibration.vibrate();
+    //         await Future.delayed(Duration(milliseconds: 500));
+    //         Vibration.vibrate();
+    //       }
+    //       print("Test 5");
+    //     }
+    //     print("Test 6");
+    //     String link = '';
+    //     print("Test 7");
+    //     try {
+    //       double lat = _location.latitude;
+    //       double long = _location.longitude;
+    //       print("$lat ... $long");
+    //       print("Test 9");
+    //       link = "http://maps.google.com/?q=$lat,$long";
+    //       SharedPreferences prefs = await SharedPreferences.getInstance();
+    //       List<String> numbers = prefs.getStringList("numbers") ?? [];
+    //       String error;
+    //       try {
+    //         if (numbers.isEmpty) {
+    //           screenShake = "No contacs found, Please call 15 ASAP.";
+    //           debugPrint(
+    //             'No Contacts Found!',
+    //           );
+    //           return;
+    //         } else {
+    //           for (int i = 0; i < numbers.length; i++) {
+    //             //Here I used telephony to send sms messages to the saved contacts.
+    //             Telephony.backgroundInstance.sendSms(
+    //                 to: numbers[i], message: "Help Me! Track me here.\n$link");
+    //           }
+    //           prefs.setBool("alerted", true);
+    //           screenShake = "SOS alert Sent! Help is on the way.";
+    //         }
+    //       } on PlatformException catch (e) {
+    //         if (e.code == 'PERMISSION_DENIED') {
+    //           error = 'Please grant permission';
+    //           print('Error due to Denied: $error');
+    //         }
+    //         if (e.code == 'PERMISSION_DENIED_NEVER_ASK') {
+    //           error = 'Permission denied- please enable it from app settings';
+    //           print("Error due to not Asking: $error");
+    //         }
+    //       }
+    //       print("Test 10");
+    //       print(link);
+    //     } catch (e) {
+    //       print("Test 11");
+    //       print(e);
+    //     }
+    //   });
+  );
   print("Test 12");
   // on initial call to onStart() this will call which brings the background 
   // service to life
@@ -207,11 +211,41 @@ void callbackDispatcher() {
     String link = "http://maps.google.com/?q=${location[0]},${location[1]}";
     print(location);
     print(link);
-    Telephony.backgroundInstance
-        .sendSms(to: contact, message: "I am on my way! Track me here.\n$link");
+    // Telephony.backgroundInstance
+    //     .sendSms(to: contact, message: "I am on my way! Track me here.\n$link" );
+    String result = await sendSMS(message: "I am on my way! Track me here.\n$link" , recipients: [contact] , sendDirect: true);
+
+    if(inputData["id"] == 2){
+
+      // final microphone = FlutterSoundRecorder();
+      //
+      // final file_path = "path_to.wav";
+      // await microphone.startRecorder(toFile:"path_to.wav");
+      // await Future.delayed(Duration(seconds:5));
+      //
+      // final url = await microphone.stopRecorder();
+      //
+      // final recordAudio = await microphone.getRecordURL(path: url);
+      //
+      // final cloudinary = CloudinaryPublic("_cloudName", "_uploadPreset");
+      //
+      // final uploadResult = await cloudinary.uploadFile(
+      //     MultipartFile.
+      // );
+
+        // Init a new Stream
+    // Stream<List<int>> stream = await MicStream.microphone(sampleRate: 44100);
+
+// Start listening to the stream
+    // StreamSubscription<List<int>> listener = stream.listen((samples) => print(samples));
+    }
+    
+// Audio Data as a Stream 
     return true;
   });
 }
+
+
 
 // I hope this project have helped you
 // And I am just happy that I have helped you in any way :)

@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_sms/flutter_sms.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:location/location.dart';
 import 'package:permission_handler/permission_handler.dart' as appPermissions;
 import 'package:pinput/pin_put/pin_put.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:sms_maintained/sms.dart' as smsSender;
+import 'package:womensafteyhackfair/Dashboard/Community.dart';
 import 'package:womensafteyhackfair/Dashboard/ContactScreens/phonebook_view.dart';
 import 'package:womensafteyhackfair/Dashboard/Home.dart';
 import 'package:womensafteyhackfair/Dashboard/ContactScreens/MyContacts.dart';
@@ -21,7 +22,7 @@ class Dashboard extends StatefulWidget {
 class _DashboardState extends State<Dashboard> {
   _DashboardState({this.currentPage = 0});
 
-  List<Widget> screens = [Home(), MyContactsScreen()];
+  List<Widget> screens = [Home(), MyContactsScreen() , Community()] ;
   bool alerted = false;
   int currentPage = 0;
   final TextEditingController _pinPutController = TextEditingController();
@@ -102,7 +103,8 @@ class _DashboardState extends State<Dashboard> {
         shape: CircularNotchedRectangle(),
         notchMargin: 12,
         child: Container(
-          height: 60,
+          height: 100
+          ,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
@@ -117,6 +119,23 @@ class _DashboardState extends State<Dashboard> {
                     "assets/home.png",
                     height: 28,
                   )),
+                  
+//community 
+ InkWell(
+                  onTap: () {
+                    if (currentPage != 2)
+                      setState(() {
+                        currentPage = 2;
+                      });
+                  },
+                  child: Icon(
+                    Icons.group,
+                    color:Color.fromARGB(255, 127, 48, 216),
+                    size:45
+                  )),
+
+
+
               InkWell(
                   onTap: () {
                     if (currentPage != 1)
@@ -125,6 +144,7 @@ class _DashboardState extends State<Dashboard> {
                       });
                   },
                   child: Image.asset("assets/phone_red.png", height: 28)),
+                    
             ],
           ),
         ),
@@ -155,38 +175,63 @@ class _DashboardState extends State<Dashboard> {
       await appPermissions.Permission.sms.request();
     }
   }
-
-  void sendSMS(String number, String msgText) {
-    print(number);
-    print(msgText);
-    smsSender.SmsMessage msg = new smsSender.SmsMessage(number, msgText);
-    final smsSender.SmsSender sender = new smsSender.SmsSender();
-    msg.onStateChanged.listen((state) {
-      if (state == smsSender.SmsMessageState.Sending) {
-        return Fluttertoast.showToast(
-          msg: 'Sending Alert...',
-          backgroundColor: Colors.blue,
-        );
-      } else if (state == smsSender.SmsMessageState.Sent) {
-        return Fluttertoast.showToast(
-          msg: 'Alert Sent Successfully!',
-          backgroundColor: Colors.green,
-        );
-      } else if (state == smsSender.SmsMessageState.Fail) {
-        return Fluttertoast.showToast(
-          msg: 'Failure! Check your credits & Network Signals!',
-          backgroundColor: Colors.red,
-        );
-      } else {
-        return Fluttertoast.showToast(
-          msg: 'Failed to send SMS. Try Again!',
-          backgroundColor: Colors.red,
-        );
-      }
+ // dSMS(String number, String msgText) {
+  //   print(number);
+  //   print(msgText);
+  //   smsSender.SmsMessage msg = new smsSender.SmsMessage(number, msgText);
+  //   final smsSender.SmsSender sender = new smsSender.SmsSender();
+  //   msg.onStateChanged.listen((state) {
+  //     if (state == smsSender.SmsMessageState.Sending) {
+  //       return Fluttertoast.showToast(
+  //         msg: 'Sending Alert...',
+  //         backgroundColor: Colors.blue,
+  //       );
+  //     } else if (state == smsSender.SmsMessageState.Sent) {
+  //       return Fluttertoast.showToast(
+  //         msg: 'Alert Sent Successfully!',
+  //         backgroundColor: Colors.green,
+  //       );
+  //     } else if (state == smsSender.SmsMessageState.Fail) {
+  //       return Fluttertoast.showToast(
+  //         msg: 'Failure! Check your credits & Network Signals!',
+  //         backgroundColor: Colors.red,
+  //       );
+  //     } else {
+  //       return Fluttertoast.showToast(
+  //         msg: 'Failed to send SMS. Try Again!',
+  //         backgroundColor: Colors.red,
+  //       );
+  //     }
+  //   });
+  //   sender.sendSms(msg);
+  // }
+  
+void sendMsg(String number, String msgText) async {
+  try {
+    String result = await sendSMS( message: msgText , recipients: [number] , sendDirect: true)
+        .catchError((onError) {
+      print(onError);
     });
-    sender.sendSms(msg);
-  }
 
+    if (result == 'OK') {
+      Fluttertoast.showToast(
+        msg: 'Alert Sent Successfully!',
+        backgroundColor: Colors.green,
+      );
+    } else {
+      Fluttertoast.showToast(
+        msg: 'Failed to send SMS. Try Again!',
+        backgroundColor: Colors.red,
+      );
+    }
+  } catch (e) {
+    print(e);
+    Fluttertoast.showToast(
+      msg: 'Failure! Check your credits & Network Signals!',
+      backgroundColor: Colors.red,
+    );
+  }
+}
   sendAlertSMS(bool isAlert) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
@@ -231,7 +276,7 @@ class _DashboardState extends State<Dashboard> {
         }
 
         for (int i = 0; i < numbers.length; i++) {
-          sendSMS(numbers[i].split("***")[1], link);
+          sendSMS(message :link , recipients: [numbers[i].split("***")[1]]);
         }
       }
     } on PlatformException catch (e) {

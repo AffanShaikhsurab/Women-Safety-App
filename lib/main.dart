@@ -6,24 +6,25 @@ import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:womensafteyhackfair/Dashboard/Dashboard.dart';
-import 'package:womensafteyhackfair/Dashboard/Splsah/Splash.dart';
-import 'package:womensafteyhackfair/background_services.dart';
 import 'package:workmanager/workmanager.dart';
+
+import 'Dashboard/Splsah/Splash.dart';
+import 'background_services.dart';
 
 
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await FlutterBackgroundService.initialize(onStart);
-  Workmanager().initialize(
-    callbackDispatcher,
-    isInDebugMode: false,
-  );
+  // WidgetsFlutterBinding.ensureInitialized();
+  // await FlutterBackgroundService.initialize(onStart);
+  // Workmanager().initialize(
+  //   callbackDispatcher,
+  //   isInDebugMode: false,
+  // );
   
-  SystemChrome.setPreferredOrientations(
-      [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]).then((_) {
+  // SystemChrome.setPreferredOrientations(
+  //     [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]).then((_) {
     runApp(MyApp());
-  });
+  // });
 }
 
 class MyApp extends StatelessWidget {
@@ -33,27 +34,15 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Amaan',
+      title: 'Shakti',
       theme: ThemeData(
         fontFamily: GoogleFonts.poppins().fontFamily,
         primarySwatch: Colors.blue,
       ),
-      home: FutureBuilder(
-          future: isAppOpeningForFirstTime(),
-          builder: (context, AsyncSnapshot<bool> snap) {
-            if (snap.hasData) {
-              if (snap.data) {
-                return Dashboard();
-              } else {
-                return Splash();
-              }
-            } else {
-              return Container(
-                color: Colors.white,
-              );
-            }
-          }),
+      home:     Splash(),
     );
+              }
+       
   }
 
   Future<bool> isAppOpeningForFirstTime() async {
@@ -64,4 +53,4 @@ class MyApp extends StatelessWidget {
     }
     return result;
   }
-}
+

@@ -7,6 +7,7 @@ import 'package:womensafteyhackfair/Dashboard/DashWidgets/Emergency.dart';
 import 'package:womensafteyhackfair/Dashboard/DashWidgets/LiveSafe.dart';
 import 'package:womensafteyhackfair/Dashboard/Articles%20-%20SafeCarousel/SafeCarousel.dart';
 import 'package:womensafteyhackfair/Dashboard/DashWidgets/SafeHome.dart';
+import 'package:womensafteyhackfair/Dashboard/DashWidgets/SuperAlert.dart';
 
 class Home extends StatefulWidget {
   const Home({Key key}) : super(key: key);
@@ -34,7 +35,8 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return 
+    Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         DashAppbar(
@@ -46,7 +48,11 @@ class _HomeState extends State<Home> {
             child: ListView(
               shrinkWrap: true,
               children: [
-                SafeCarousel(),
+                // welcome(),
+                SizedBox(height:5),
+                SafeHome(),
+
+                // SafeCarousel(),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 8.0),
                   child: Row(
@@ -65,7 +71,7 @@ class _HomeState extends State<Home> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => AllArticles(),
+                              builder: (context) => Emergency(),
                             ),
                           );
                         },
@@ -74,7 +80,9 @@ class _HomeState extends State<Home> {
                     ],
                   ),
                 ),
-                Emergency(),
+                SuperAlert(),
+
+                // Emergency(),
                 Padding(
                   padding:
                       const EdgeInsets.only(left: 16.0, bottom: 10, top: 10),
@@ -84,15 +92,50 @@ class _HomeState extends State<Home> {
                   ),
                 ),
                 LiveSafe(),
-                SafeHome(),
                 SizedBox(
                   height: 50,
-                )
+                ),
+                Emergency()
               ],
             ),
           ),
         ),
       ],
     );
+    
+   
   }
+}
+
+
+class welcome extends StatelessWidget {
+  const welcome({Key key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+  return 
+
+    Column(
+    crossAxisAlignment :CrossAxisAlignment.stretch,
+    children: [
+      Padding(padding: EdgeInsets.fromLTRB(40, 0, 0, 5),
+      child: Text("Welcome Back " ,
+    textAlign : TextAlign .start,
+    style:TextStyle(
+      
+      fontSize: 20
+    )),
+      ),
+   
+        Padding(padding: EdgeInsets.fromLTRB(40, 0, 0, 20),
+ child: Text("Rakshita",
+        textAlign : TextAlign .start,
+style:TextStyle(
+      
+      fontSize: 20)))
+  ]
+  );
+  
+
+}
 }
